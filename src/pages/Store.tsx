@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import { StoreItem, StoreItemProps } from "../components/StoreItem";
 
 export function Store() {
 
@@ -15,9 +16,6 @@ export function Store() {
 
    useEffect(() => {
     getProds()
-    products.forEach((e)=>{
-      console.log(e)
-    })
   }, [])
 
   return (
@@ -25,10 +23,10 @@ export function Store() {
       <h1> Store </h1>
       {products.length &&
         <>
-          <Row>
-            {products.map((el:any) =>
-              <Col key={el.title}>
-                {el.title}
+          <Row md={2} xs={1} lg={3} className='g-3'>
+            {products.map((item:StoreItemProps) =>
+              <Col key={item.id}>
+                <StoreItem {...item}/>
               </Col>
             )}
           </Row>
