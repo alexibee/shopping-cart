@@ -11,7 +11,7 @@ export function Navbar(){
       <Container>
         <Nav className="me-auto">
           {pages.map(page =>
-            <Nav.Link to={page[1]} as={NavLink}>{page[0]}</Nav.Link>
+            <Nav.Link to={page[1]} as={NavLink} key={page[0]}>{page[0]}</Nav.Link>
           )}
         </Nav>
         <Button
