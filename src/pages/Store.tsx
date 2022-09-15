@@ -1,22 +1,11 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { StoreItem, StoreItemProps } from "../components/StoreItem";
+import { useCart } from "../context/CartContext";
 
 export function Store() {
 
-  const [products, setProducts] = useState([]);
-
-   async function getProds() {
-    await fetch('https://fakestoreapi.com/products')
-    .then(res=>res.json())
-    .then(json=> {
-      setProducts(json)
-    })
-   }
-
-   useEffect(() => {
-    getProds()
-  }, [])
+  const {products} = useCart()
 
   return (
     <>

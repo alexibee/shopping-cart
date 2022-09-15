@@ -1,4 +1,7 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { ShoppingCart } from "../components/ShoppingCart";
+import { StoreItemProps } from "../components/StoreItem";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type CartProviderProps = {
   children: ReactNode
@@ -10,10 +13,15 @@ type CartItem = {
 }
 
 type CartContext = {
+  openCart: () => void
+  closeCart: () => void
   getItemQuantity: (id: number) => number
   increaseQuantity: (id:number) => void
   decreaseQuantity: (id:number) => void
   removeItem: (id:number) => void
+  cartQuantity: number
+  cartItems: CartItem[]
+  products: StoreItemProps[]
 }
 
 const CartContext = createContext({} as CartContext)
@@ -23,7 +31,27 @@ export function useCart() {
 }
 
 export function CartProvider({children}:CartProviderProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>('cart',[])
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false)
+
+  const [products, setProducts] = useState([]);
+
+  async function getProds() {
+    await fetch('https://fakestoreapi.com/products')
+    .then(res=>res.json())
+    .then(json=> {
+      setProducts(json)
+    })
+  }
+
+  useEffect(() => {
+    getProds()
+  }, [])
+
+  const cartQuantity = cartItems.reduce(
+    (quantity, item) => item.quantity + quantity,
+    0
+  )
 
   function getItemQuantity(id: number):number {
     return cartItems.find(item => item.id === id)?.quantity || 0
@@ -69,10 +97,26 @@ export function CartProvider({children}:CartProviderProps) {
     }
   }
 
+  const openCart = () => setIsCartOpen(true)
+  const closeCart = () => setIsCartOpen(false)
+
 
   return (
-    <CartContext.Provider value={{getItemQuantity,increaseQuantity,decreaseQuantity,removeItem}}>
+    <CartContext.Provider
+      value={{
+        getItemQuantity,
+        increaseQuantity,
+        decreaseQuantity,
+        removeItem,
+        cartItems,
+        cartQuantity,
+        openCart,
+        closeCart,
+        products
+      }}
+    >
       {children}
+      <ShoppingCart isCartOpen={isCartOpen}/>
     </CartContext.Provider>
   )
 }
