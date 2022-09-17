@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const assetsRouter = require("./server/assets-router");
+const assetsRouter = require("./server/assets-router.cjs");
 const app = express();
 app.use("/", express.static(path.join(__dirname, "public")));
 app.get("/api/v1", (req, res) => {
@@ -12,7 +12,7 @@ app.get("/api/v1", (req, res) => {
 app.get("/*", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 })
-const { PORT = 5000 } = process.env;
+const { PORT = 5173 } = process.env;
 app.listen(PORT, () => {
   console.log();
   console.log(`  App running in port ${PORT}`);
