@@ -2,11 +2,10 @@ const express = require("express");
 const path = require("path");
 const assetsRouter = require("./server/assets-router.cjs");
 const app = express();
-app.use("/", express.static(path.join(__dirname, "public")));
+app.use("/", express.static(path.join(__dirname, "public" )));
 app.get("/api/v1", (req, res) => {
   res.json({
-    project: "React and Express Boilerplate",
-    from: "Vanaldito",
+    stuff: "Response",
   });
 });
 app.get("/*", (_req, res) => {
